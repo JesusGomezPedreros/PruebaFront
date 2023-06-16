@@ -21,6 +21,7 @@ namespace PruebaFront.Controllers
 
         public IActionResult Index()
         {
+            // Declaración de variables
             var modelEstudiantes = new List<RegistrarUsuario>();
             var modelModulos = new List<Modulos>();
             var modelClases = new List<Clases>();
@@ -30,6 +31,7 @@ namespace PruebaFront.Controllers
 
             try
             {
+                // Se realiza la deserialización de los datos en paralelo
                 Parallel.Invoke(
                     () => modelEstudiantes = JsonConvert.DeserializeObject<List<RegistrarUsuario>>(_PruebaServices.ConsultaEstudiantes().Result),
                     () => modelModulos = JsonConvert.DeserializeObject<List<Modulos>>(_PruebaServices.ConsultaModulos().Result),
@@ -42,6 +44,7 @@ namespace PruebaFront.Controllers
                 return RedirectToAction(nameof(Error));
 
             }
+            // Se copian los datos deserializados a las listas correspondientes
             foreach (var item in modelEstudiantes)
             {
                 var datos = new RegistrarUsuario();
@@ -53,7 +56,7 @@ namespace PruebaFront.Controllers
                 datos.tipoLicencia = item.tipoLicencia;
                 listaEstudiantes.Add(datos);
             }
-
+            // Se crea el modelo de vista con las listas de datos
             var modeloVista = new
             {
                 consultaEstudiantes = listaEstudiantes,
@@ -65,6 +68,7 @@ namespace PruebaFront.Controllers
         }
         public async Task<IActionResult> ConsultaCursos(int estudianteId)
         {
+            // Obtiene los cursos de un estudiante por su ID
             var modelCursos = await _PruebaServices.ConsultaModulosEstudiantes(estudianteId);
             var listaEstudiantesCursos = new List<RegistrarUsuario>();
             var modelos = JsonConvert.DeserializeObject<List<ModulosClasesEstudiante>>(modelCursos);
@@ -88,6 +92,7 @@ namespace PruebaFront.Controllers
         [HttpPost]
         public async Task<IActionResult> RegistrarEstudiante(RegistrarUsuario registrarUsuario)
         {
+            // Registra un estudiante
             var estudiante = string.Empty;
             try
             {
